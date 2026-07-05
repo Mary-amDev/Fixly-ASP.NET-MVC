@@ -28,15 +28,15 @@ namespace Fixly.Models
         [ForeignKey("ProviderId")]
         public ApplicationUser Provider { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال وصف المشكلة")]
-        [StringLength(500, ErrorMessage = "وصف المشكلة يجب ألا يتجاوز 500 حرف")]
+        [Required(ErrorMessage = "Problem description is required.")]
+        [StringLength(500, ErrorMessage = "Problem description cannot exceed 500 characters.")]
         public string ProblemDescription { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال التاريخ المطلوب")]
+        [Required(ErrorMessage = "Requested date is required.")]
         [DataType(DataType.Date)]
         public DateTime RequestedDate { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال الوقت المطلوب")]
+        [Required(ErrorMessage = "Requested time is required.")]
         [DataType(DataType.Time)]
         public TimeSpan RequestedTime { get; set; }
 

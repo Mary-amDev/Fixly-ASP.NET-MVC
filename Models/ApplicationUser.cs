@@ -5,12 +5,12 @@ namespace Fixly.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        [Required(ErrorMessage = "يجب إدخال الاسم")]
-        [StringLength(100, ErrorMessage = "الاسم يجب ألا يتجاوز 100 حرف")]
+        [Required(ErrorMessage = "Full name is required.")]
+        [StringLength(100, ErrorMessage = "Full name cannot exceed 100 characters.")]
         public string FullName { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال المدينة")]
-        [StringLength(50, ErrorMessage = "اسم المدينة يجب ألا يتجاوز 50 حرف")]
+        [Required(ErrorMessage = "City is required.")]
+        [StringLength(50, ErrorMessage = "City name cannot exceed 50 characters.")]
         public string City { get; set; }
     }
 }

@@ -14,15 +14,15 @@ namespace Fixly.Models
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال التخصص")]
-        [StringLength(50, ErrorMessage = "التخصص يجب ألا يتجاوز 50 حرف")]
+        [Required(ErrorMessage = "Service category is required.")]
+        [StringLength(50, ErrorMessage = "Service category cannot exceed 50 characters.")]
         public string ServiceCategory { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال عدد سنوات الخبرة")]
-        [Range(0, 60, ErrorMessage = "عدد سنوات الخبرة غير صحيح")]
+        [Required(ErrorMessage = "Years of experience is required.")]
+        [Range(0, 60, ErrorMessage = "Invalid number of years of experience.")]
         public int YearsExperience { get; set; }
 
-        [StringLength(1000, ErrorMessage = "النبذة يجب ألا تتجاوز 1000 حرف")]
+        [StringLength(1000, ErrorMessage = "About section cannot exceed 1000 characters.")]
         public string About { get; set; }
 
         public ICollection<WorkImage> WorkImages { get; set; }

@@ -14,7 +14,7 @@ namespace Fixly.Models
         [ForeignKey("ServiceProviderProfileId")]
         public ServiceProviderProfile ServiceProviderProfile { get; set; }
 
-        [Required(ErrorMessage = "يجب إدخال مسار الصورة")]
+        [Required(ErrorMessage = "Image path is required.")]
         public string ImagePath { get; set; }
     }
 }
