@@ -1,0 +1,127 @@
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Fixly.Data;
+using Fixly.Models;
+using System.Threading.Tasks;
+
+namespace Fixly.Controllers
+{
+    public class AccountController : Controller
+    {
+        private readonly SignInManager<ApplicationUser> _signInManager;
+         private readonly UserManager<ApplicationUser> _userManager;
+         private readonly AppDbContext _context;
+         public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext cn) 
+        {
+            _signInManager = signInManager;
+            _userManager = userManager; 
+            _context =cn;
+        }
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            var model = new LoginViewModel { };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (!ModelState.IsValid) return View(model);
+
+            var result = await _signInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, false);
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var roles = await _userManager.GetRolesAsync(user);
+                return RedirectToRoleHome(roles.FirstOrDefault());
+            }
+
+            ModelState.AddModelError("", "Invalid login attempt.");
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (model.Role == "Service Provider")
+            {
+                if (string.IsNullOrWhiteSpace(model.ServiceCategory))
+                    ModelState.AddModelError(nameof(model.ServiceCategory),
+                        "التخصص مطلوب.");
+
+                if (!model.YearsExperience.HasValue)
+                    ModelState.AddModelError(nameof(model.YearsExperience),
+                        "عدد سنوات الخبرة مطلوب.");
+
+                if (string.IsNullOrWhiteSpace(model.About))
+                    ModelState.AddModelError(nameof(model.About),
+                        "النبذة مطلوبة.");
+            }
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var user = new ApplicationUser
+            {
+                UserName = model.Email,
+                Email = model.Email,
+                FullName = model.FullName,
+                City = model.City,
+                PhoneNumber = model.PhoneNumber
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+
+                return View(model);
+            }
+
+            await _userManager.AddToRoleAsync(user, model.Role);
+
+            if (model.Role == "Service Provider")
+            {
+                _context.ServiceProviderProfiles.Add(new ServiceProviderProfile
+                {
+                    UserId = user.Id,
+                    ServiceCategory = model.ServiceCategory,
+                    YearsExperience = model.YearsExperience!.Value,
+                    About = model.About
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
+            await _signInManager.SignInAsync(user, false);
+
+            return RedirectToRoleHome(model.Role);
+        }
+
+        private IActionResult RedirectToRoleHome(string role)
+        {
+            switch (role)
+            {
+                case "Customer":
+                    return RedirectToAction("Index", "Provider");
+
+                case "Service Provider":
+                    return RedirectToAction("Incoming", "Requests");
+
+                default:
+                    return RedirectToAction("Login");
+            }
+        }
+           
+    }
+}
