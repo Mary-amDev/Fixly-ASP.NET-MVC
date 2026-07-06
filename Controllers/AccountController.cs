@@ -11,11 +11,13 @@ namespace Fixly.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
          private readonly UserManager<ApplicationUser> _userManager;
          private readonly AppDbContext _context;
-         public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext cn) 
+         private readonly IWebHostEnvironment _environment;
+         public AccountController(SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext cn, IWebHostEnvironment environment) 
         {
             _signInManager = signInManager;
             _userManager = userManager; 
             _context =cn;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -92,15 +94,55 @@ namespace Fixly.Controllers
 
             if (model.Role == "Service Provider")
             {
-                _context.ServiceProviderProfiles.Add(new ServiceProviderProfile
+                var providerProfile = new ServiceProviderProfile
                 {
                     UserId = user.Id,
                     ServiceCategory = model.ServiceCategory,
                     YearsExperience = model.YearsExperience!.Value,
                     About = model.About
-                });
+                };
+
+                _context.ServiceProviderProfiles.Add(providerProfile);
 
                 await _context.SaveChangesAsync();
+
+                if (model.WorkImages != null && model.WorkImages.Any())
+                {
+                    string uploadFolder = Path.Combine(
+                        _environment.WebRootPath,
+                        "images");
+
+                    if (!Directory.Exists(uploadFolder))
+                    {
+                        Directory.CreateDirectory(uploadFolder);
+                    }
+
+                    foreach (var image in model.WorkImages)
+                    {
+                        if (image.Length > 0)
+                        {
+                            string fileName =
+                                Guid.NewGuid().ToString() +
+                                Path.GetExtension(image.FileName);
+
+                            string filePath =
+                                Path.Combine(uploadFolder, fileName);
+
+                            using (var stream = new FileStream(filePath, FileMode.Create))
+                            {
+                                await image.CopyToAsync(stream);
+                            }
+
+                            _context.WorkImages.Add(new WorkImage
+                            {
+                                ServiceProviderProfileId = providerProfile.Id,
+                                ImagePath = "images/" + fileName
+                            });
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
             }
 
             await _signInManager.SignInAsync(user, false);

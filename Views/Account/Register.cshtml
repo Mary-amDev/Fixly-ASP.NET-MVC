@@ -18,7 +18,7 @@
                 <h3 class="card-title text-center mb-1">Fixly</h3>
                 <p class="text-center text-muted mb-4">Create a New Account</p>
 
-                <form asp-controller="Account" asp-action="Register" method="post" id="registerForm">
+                <form asp-controller="Account" asp-action="Register" method="post" id="registerForm" enctype="multipart/form-data">
                     <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
 
                     <div class="mb-3">
@@ -97,6 +97,21 @@
 
                         <span asp-validation-for="About" class="text-danger"></span>
                     </div>
+                    
+                    <div class="mb-3" id="workImagesGroup" style="display:none;">
+                        <label class="form-label">
+                            Previous Work Images
+                        </label>
+
+                        <input asp-for="WorkImages"
+                            type="file"
+                            class="form-control"
+                            multiple
+                            accept="image/*" />
+
+                        <span asp-validation-for="WorkImages"
+                            class="text-danger"></span>
+                    </div>
 
                     <button type="submit" class="btn btn-primary w-100">Create Account</button>
                 </form>
@@ -117,6 +132,7 @@
         const categoryGroup = document.getElementById('serviceCategoryGroup');
         const yearsGroup = document.getElementById('yearsExperienceGroup');
         const aboutGroup = document.getElementById('aboutGroup');
+        const workImagesGroup = document.getElementById('workImagesGroup');
 
         function toggleProviderFields() {
             const isProvider =
@@ -126,6 +142,7 @@
             categoryGroup.style.display = isProvider ? "block" : "none";
             yearsGroup.style.display = isProvider ? "block" : "none";
             aboutGroup.style.display = isProvider ? "block" : "none";
+            workImagesGroup.style.display = isProvider ? "block" : "none";
         }
 
         roleInputs.forEach(r =>

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
 
 namespace Fixly.Models
 {
@@ -39,5 +40,7 @@ namespace Fixly.Models
         public string? About { get; set; }
 
         public int? YearsExperience { get; set; }
+        
+        public List<IFormFile>? WorkImages { get; set; }
     }
 }

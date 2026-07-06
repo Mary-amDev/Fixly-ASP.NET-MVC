@@ -8,3 +8,6 @@ obj/
 
 # Development settings
 appsettings.Development.json
+
+# Uploaded images
+wwwroot/images/
