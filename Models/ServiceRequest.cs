@@ -28,10 +28,6 @@ namespace Fixly.Models
         [ForeignKey("ProviderId")]
         public ApplicationUser Provider { get; set; }
 
-        [Required(ErrorMessage = "Problem description is required.")]
-        [StringLength(500, ErrorMessage = "Problem description cannot exceed 500 characters.")]
-        public string ProblemDescription { get; set; }
-
         [Required(ErrorMessage = "Requested date is required.")]
         [DataType(DataType.Date)]
         public DateTime RequestedDate { get; set; }
@@ -39,6 +35,10 @@ namespace Fixly.Models
         [Required(ErrorMessage = "Requested time is required.")]
         [DataType(DataType.Time)]
         public TimeSpan RequestedTime { get; set; }
+
+        [Required(ErrorMessage = "Problem description is required.")]
+        [StringLength(500, ErrorMessage = "Problem description cannot exceed 500 characters.")]
+        public string ProblemDescription { get; set; }
 
         [Required]
         public RequestStatus Status { get; set; } = RequestStatus.Pending;
