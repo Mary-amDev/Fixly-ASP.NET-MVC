@@ -18,68 +18,71 @@
         Jobs customers have sent your way.
     </p>
 
-    <div class="card shadow border-0 rounded-4">
+    <div class="card shadow border-0 rounded-2">
+        <div class = "card-body rounded-4">
 
-        <table class="table align-middle mb-0">
-            <thead>
-                <tr>
-                    <th>Customer</th>
-                    <th>Service</th>
-                    <th>Date</th>
-                    <th>Time</th>
-                    <th>Problem</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                @foreach(var item in Model)
-                {
+        
+            <table class="table align-middle mb-0">
+                <thead>
                     <tr>
-                        <td class="fw-semibold">
-                            @item.Customer
-                        </td>
-
-                        <td>
-                            <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
-                                @item.Provider
-                            </span>
-                        </td>
-
-                        <td>
-                            @item.RequestedDate.ToString("yyyy-MM-dd")
-                        </td>
-
-                        <td>
-                            @item.RequestedTime
-                        </td>
-
-                        <td>
-                            @item.ProblemDescription
-                        </td>
-
-                        <td>
-                            <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
-                                @item.Status
-                            </span>
-                        </td>
-
-                        <td>
-                            <button class="btn btn-success btn-sm">
-                                Accept
-                            </button>
-
-                            <button class="btn btn-danger btn-sm">
-                                Reject
-                            </button>
-                        </td>
+                        <th>Customer</th>
+                        <th>Service</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Problem</th>
+                        <th>Status</th>
+                        <th>Action</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
 
+                <tbody>
+
+                    @foreach(var item in Model)
+                    {
+                        <tr>
+                            <td class="fw-semibold">
+                                @item.Customer
+                            </td>
+
+                            <td>
+                                <span class="badge bg-primary-subtle text-primary px-3 py-2 rounded-pill">
+                                    @item.Provider
+                                </span>
+                            </td>
+
+                            <td>
+                                @item.RequestedDate.ToString("yyyy-MM-dd")
+                            </td>
+
+                            <td>
+                                @item.RequestedTime
+                            </td>
+
+                            <td>
+                                @item.ProblemDescription
+                            </td>
+
+                            <td>
+                                <span class="badge bg-warning-subtle text-warning px-3 py-2 rounded-pill">
+                                    @item.Status
+                                </span>
+                            </td>
+
+                            <td>
+                                <button class="btn btn-success btn-sm">
+                                    Accept
+                                </button>
+
+                                <button class="btn btn-danger btn-sm">
+                                    Reject
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+    </div>
     </div>
 
 </div>
