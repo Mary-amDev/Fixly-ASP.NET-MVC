@@ -1,0 +1,120 @@
+@model Fixly.Models.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<style>
+    .fx-page { max-width: 720px; }
+    .fx-title { font-size: 26px; font-weight: 500; color: #1F2430; margin: 0 0 6px; }
+    .fx-subtitle { color: #8A93A6; font-size: 14px; margin: 0 0 32px; }
+
+    .profile-header { background:#fff; border:1px solid #EEF1F6; border-radius:20px; padding:32px; box-shadow:0 1px 3px rgba(20,23,31,.03); margin-bottom:20px; display:flex; align-items:center; gap:20px; }
+    .avatar { width:68px; height:68px; border-radius:50%; background:#EAF0FF; color:#3B5FE0; display:flex; align-items:center; justify-content:center; font-size:24px; font-weight:500; flex-shrink:0; overflow:hidden; }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+
+    .profile-section { background:#fff; border:1px solid #EEF1F6; border-radius:20px; padding:30px 32px; box-shadow:0 1px 3px rgba(20,23,31,.03); margin-bottom:16px; }
+    .profile-grid { display:grid; grid-template-columns:1fr 1fr; }
+    .profile-field { padding: 16px 0; border-top: 1px solid #F1F3F8; }
+    .profile-field:nth-child(1), .profile-field:nth-child(2) { border-top: none; padding-top: 0; }
+    .profile-field label { font-weight:500; display:block; font-size:12.5px; color:#9AA2B1; margin-bottom:6px; }
+    .profile-field .val { font-size:15px; font-weight:400; color:#2A2F3B; line-height:1.5; }
+
+    .work-images { display:flex; gap:12px; flex-wrap:wrap; margin-top:14px; }
+    .work-images img { width:96px; height:96px; object-fit:cover; border-radius:14px; }
+
+    .chip { display:inline-block; padding:3px 12px; border-radius:999px; font-size:12px; font-weight:500; background:#EAF0FF; color:#3B5FE0; }
+
+    .btn { background:#3B5FE0; color:#fff; border:none; padding:13px 24px; cursor:pointer; font-size:14px; font-weight:500; border-radius:12px; text-decoration:none; display:inline-block; transition:background .15s ease; }
+    .btn:hover { background:#2E4FC9; color:#fff; }
+</style>
+
+<div class="fx-page">
+    <h1 class="fx-title">Profile</h1>
+    <p class="fx-subtitle">Your account details.</p>
+
+    <div class="profile-header">
+        <div class="avatar">
+            @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
+            {
+                <img src="~/@Model.ProfilePicturePath" alt="Profile picture" />
+            }
+            else
+            {
+                @Model.FullName.Substring(0, 1)
+            }
+        </div>
+        <div>
+            <h3 style="font-size:17px; font-weight:500; margin-bottom:5px; color:#1F2430;">@Model.FullName</h3>
+            <div style="color:#9AA2B1; font-size:13px;">
+                @Model.Role
+                @if (Model.Role == "Service Provider")
+                {
+                    <text> &nbsp;&middot;&nbsp; </text>
+                    <span class="chip">@Model.ServiceCategory</span>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <div class="profile-grid">
+            <div class="profile-field">
+                <label>Full Name</label>
+                <div class="val">@Model.FullName</div>
+            </div>
+            <div class="profile-field">
+                <label>Phone Number</label>
+                <div class="val">@Model.PhoneNumber</div>
+            </div>
+            <div class="profile-field">
+                <label>Email</label>
+                <div class="val">@Model.Email</div>
+            </div>
+            <div class="profile-field">
+                <label>City</label>
+                <div class="val">@Model.City</div>
+            </div>
+
+            @if (Model.Role == "Service Provider")
+            {
+                <div class="profile-field">
+                    <label>Service Category</label>
+                    <div class="val">@Model.ServiceCategory</div>
+                </div>
+                <div class="profile-field">
+                    <label>Years of Experience</label>
+                    <div class="val">@Model.YearsExperience</div>
+                </div>
+            }
+        </div>
+    </div>
+
+    @if (Model.Role == "Service Provider")
+    {
+        <div class="profile-section">
+            <label style="font-weight:500; font-size:12.5px; color:#9AA2B1; display:block; margin-bottom:8px;">About</label>
+            <div style="font-size:15px; color:#2A2F3B; line-height:1.7;">
+                @(string.IsNullOrEmpty(Model.About) ? "No bio added yet." : Model.About)
+            </div>
+        </div>
+
+        <div class="profile-section">
+            <label style="font-weight:500; font-size:12.5px; color:#9AA2B1; display:block;">Previous Work Images</label>
+            <div class="work-images">
+                @if (Model.WorkImages != null && Model.WorkImages.Count > 0)
+                {
+                    foreach (var img in Model.WorkImages)
+                    {
+                        <img src="~/@img.ImagePath" alt="Work image" />
+                    }
+                }
+                else
+                {
+                    <span style="color:#9AA2B1; font-size:13.5px;">No images added yet.</span>
+                }
+            </div>
+        </div>
+    }
+
+    <a class="btn" asp-controller="Profile" asp-action="Edit">Edit Profile</a>
+</div>

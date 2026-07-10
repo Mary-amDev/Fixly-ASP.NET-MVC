@@ -12,5 +12,7 @@ namespace Fixly.Models
         [Required(ErrorMessage = "City is required.")]
         [StringLength(50, ErrorMessage = "City name cannot exceed 50 characters.")]
         public string City { get; set; }
+
+        public string? ProfilePicturePath { get; set; }
     }
 }

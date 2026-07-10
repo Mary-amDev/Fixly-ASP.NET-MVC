@@ -11,3 +11,4 @@ appsettings.Development.json
 
 # Uploaded images
 wwwroot/images/
+appsettings.json

@@ -1,0 +1,125 @@
+@model Fixly.Models.ProfileEditViewModel
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<style>
+    .fx-page { max-width: 720px; }
+    .fx-title { font-size: 26px; font-weight: 500; color: #1F2430; margin: 0 0 6px; }
+    .fx-subtitle { color: #8A93A6; font-size: 14px; margin: 0 0 28px; }
+
+    .profile-section { background:#fff; border:1px solid #EEF1F6; border-radius:20px; padding:30px 32px; box-shadow:0 1px 3px rgba(20,23,31,.03); margin-bottom:16px; }
+
+    .form-row { margin-bottom:20px; }
+    .form-row label { display:block; font-weight:500; margin-bottom:8px; font-size:12.5px; color:#9AA2B1; }
+    .form-row input, .form-row textarea {
+        width:100%; padding:12px 14px; border:1.5px solid #EEF1F6; background:#FBFCFE;
+        font-size:14.5px; color:#2A2F3B; border-radius:12px; transition:border-color .15s ease;
+    }
+    .form-row input:focus, .form-row textarea:focus { outline:none; border-color:#3B5FE0; background:#fff; }
+    .form-row textarea { resize:vertical; min-height:96px; line-height:1.6; }
+
+    .current-avatar { width:64px; height:64px; border-radius:50%; object-fit:cover; margin-bottom:10px; }
+
+    .work-image-item { display:inline-block; text-align:center; margin-right:12px; margin-bottom:12px; }
+    .work-image-item img { width:84px; height:84px; object-fit:cover; border-radius:14px; display:block; margin-bottom:6px; }
+    .delete-btn { background:#FBEEEE; color:#C9564F; border:none; padding:5px 12px; border-radius:999px; font-size:12px; font-weight:500; cursor:pointer; }
+    .delete-btn:hover { background:#F5DEDD; }
+
+    .btn { background:#3B5FE0; color:#fff; border:none; padding:13px 24px; cursor:pointer; font-size:14px; font-weight:500; border-radius:12px; transition:background .15s ease; }
+    .btn:hover { background:#2E4FC9; }
+    .btn-outline { background:transparent; color:#2A2F3B; border:1.5px solid #EEF1F6; padding:13px 22px; cursor:pointer; font-size:14px; font-weight:500; border-radius:12px; text-decoration:none; }
+    .btn-outline:hover { background:#FAFBFC; color:#2A2F3B; }
+    .btn-row { display:flex; gap:12px; margin-top:24px; }
+    .text-danger { color:#C9564F; font-size:12.5px; }
+</style>
+
+<div class="fx-page">
+    <h1 class="fx-title">Edit Profile</h1>
+    <p class="fx-subtitle">Update your details.</p>
+
+    @* Existing work images live OUTSIDE the main form, each with its own small delete form.
+       This avoids putting a <form> inside another <form>, which browsers do not allow. *@
+    @if (Model.Role == "Service Provider" && Model.ExistingWorkImages != null && Model.ExistingWorkImages.Count > 0)
+    {
+        <div class="profile-section">
+            <label style="font-weight:500; font-size:12.5px; color:#9AA2B1; display:block; margin-bottom:12px;">Current Work Images</label>
+            @foreach (var img in Model.ExistingWorkImages)
+            {
+                <div class="work-image-item">
+                    <img src="~/@img.ImagePath" alt="Work image" />
+                    <form asp-controller="Profile" asp-action="DeleteWorkImage" asp-route-id="@img.Id" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="delete-btn">Remove</button>
+                    </form>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="profile-section">
+        <form asp-controller="Profile" asp-action="Edit" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Role" />
+
+            <div class="form-row">
+                <label>Profile Picture</label>
+                @if (!string.IsNullOrEmpty(Model.CurrentProfilePicturePath))
+                {
+                    <div><img class="current-avatar" src="~/@Model.CurrentProfilePicturePath" alt="Current picture" /></div>
+                }
+                <input type="file" name="ProfilePicture" accept="image/*" />
+            </div>
+
+            <div class="form-row">
+                <label>Full Name</label>
+                <input asp-for="FullName" required />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <label>Phone Number</label>
+                <input asp-for="PhoneNumber" required />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+
+            <div class="form-row">
+                <label>City</label>
+                <input asp-for="City" required />
+                <span asp-validation-for="City" class="text-danger"></span>
+            </div>
+
+            @if (Model.Role == "Service Provider")
+            {
+                <div class="form-row">
+                    <label>Service Category</label>
+                    <input asp-for="ServiceCategory" required />
+                    <span asp-validation-for="ServiceCategory" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <label>Years of Experience</label>
+                    <input asp-for="YearsExperience" type="number" min="0" max="60" required />
+                    <span asp-validation-for="YearsExperience" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <label>About</label>
+                    <textarea asp-for="About"></textarea>
+                    <span asp-validation-for="About" class="text-danger"></span>
+                </div>
+
+                <div class="form-row">
+                    <label>Add New Work Images</label>
+                    <input type="file" name="NewWorkImages" accept="image/*" multiple />
+                </div>
+            }
+
+            <div class="btn-row">
+                <button type="submit" class="btn">Save Changes</button>
+                <a class="btn-outline" asp-controller="Profile" asp-action="Index">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
