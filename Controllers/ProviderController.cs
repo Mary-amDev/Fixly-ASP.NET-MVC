@@ -11,12 +11,12 @@ public class ProviderController : Controller
     private static dynamic[] _request =
     {
        new { Id = 0, CustomerId = "2" , Customer = "Sara Al-Otaibi" ,
-        ProviderId = "3" , 
+        ProviderId = "3" ,
         Provider = "Yaqoub" ,
-        Service = "Plumbing" ,  
+        Service = "Plumbing" ,
         RequestedDate = "2026-07-02",
-        RequestedTime = "10.00" , 
-        ProblemDescription = "Leaking kitchen sink pipe." , 
+        RequestedTime = "10.00" ,
+        ProblemDescription = "Leaking kitchen sink pipe." ,
         Status = "Pending"} ,
 
        new { Id = 1, CustomerId = "3" , Customer = "Lena Al-Otaibi" ,
@@ -24,13 +24,13 @@ public class ProviderController : Controller
         Provider = "Mohammed" ,
         Service = "Plumbing" ,
         RequestedDate = "2026-07-02",
-        RequestedTime = "10.00" , 
-        ProblemDescription = "Leaking Bathroom sink pipe." , 
-        Status = "Pending"} 
-    
+        RequestedTime = "10.00" ,
+        ProblemDescription = "Leaking Bathroom sink pipe." ,
+        Status = "Pending"}
+
     };
 
-    
+
 
     private static dynamic[] _customer =
     {
@@ -38,7 +38,7 @@ public class ProviderController : Controller
        new { CustomerId = 3, FullName = "Lena Al-Otaibi" , City = "Jeddah"}
     };
 
-    private readonly AppDbContext _context; 
+    private readonly AppDbContext _context;
 
     public ProviderController(AppDbContext context)  //يسوي رفرش (دالة بناء)
     {

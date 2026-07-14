@@ -1,0 +1,113 @@
+@model List<Fixly.Models.ServiceProviderProfile>
+
+@{
+    ViewData["Title"] = "Search Service Providers";
+}
+
+<div class="container py-5">
+
+    <h2 class="fw-bold">Search Service Providers</h2>
+    <p class="text-secondary mb-4">Find trusted help near you.</p>
+
+    <!-- Filters -->
+    <form method="get" asp-action="Search" class="filter-box">
+
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+            <div class="card-body">
+
+                <div class="row">
+
+                    <div class="col-sm-5 filter-group">
+                        <label class="form-label fw-semibold">
+                            Service Category
+                        </label>
+
+                        <select name="category" class="form-select form-select-lg">
+
+                            <option value="">All categories</option>
+                            <option>Plumbing</option>
+                            <option>Electrical</option>
+                            <option>Cleaning</option>
+                            <option>Painting</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-sm-5 filter-group">
+                        <label class="form-label fw-semibold">
+                            City
+                        </label>
+
+                        <select name="city" class="form-select form-select-lg">
+
+                            <option value="">All cities</option>
+                            <option>Jeddah</option>
+                            <option>Khobar</option>
+                            <option>Riyadh</option>
+                            <option>Al-Hasa</option>
+
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2 mt-4 text-end">
+                        <button type="submit" class="btn btn-primary rounded-pill px-4 py-2">
+                            Search
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Providers -->
+
+    @foreach (var provider in Model)
+    {
+        <div class="card border-0 shadow-sm rounded-4 mb-4">
+
+            <div class="card-body">
+
+                <div class="row align-items-center">
+
+                    <div class="col-sm-9">
+
+                        <h4 class="fw-bold mb-3">
+                            @provider.User.FullName
+                        </h4>
+
+                        <div class="mb-3">
+
+                            <span class="badge bg-primary rounded-pill px-3 py-2">
+                                @provider.ServiceCategory
+                            </span>
+
+                            <span class="ms-3 text-secondary">
+                                @provider.User.City
+                            </span>
+
+                        </div>
+
+                        <p class="mb-0">
+                            @provider.About
+                        </p>
+
+                    </div>
+                    <div class="col-sm-3 text-sm-end mt-3 mt-sm-0">
+                        <a asp-controller="ProviderController" asp-action="RequestService" asp-route-providerId="@provider.Id"
+                           class="btn btn-warning rounded-pill "
+                           style="background-color: #cc5708; color: white; border: none;">
+                            Request Service
+                        </a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+</div>

@@ -15,6 +15,7 @@ namespace Fixly.Data
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
         public DbSet<WorkImage> WorkImages { get; set; }
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
