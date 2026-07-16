@@ -17,6 +17,7 @@ namespace Fixly.Data
         public DbSet<ApplicationUser> Customers { get; set; }
 
 
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
