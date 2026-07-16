@@ -99,14 +99,22 @@
 
                                 <td>
                                     @if (req.Status == Fixly.Models.RequestStatus.Pending)
-                                    {
-                                        <button class="btn bg-success-subtle btn-sm text-success px-3 rounded-3">
+{
+                                        <a asp-action="AcceptRequest"
+                                        asp-route-id="@req.Id"
+                                        class="btn bg-success-subtle btn-sm text-success px-3 rounded-3">
                                             Accept
-                                        </button>
+                                        </a>
 
-                                        <button class="btn bg-danger-subtle btn-sm text-danger px-3 rounded-3">
+                                        <a asp-action="RejectRequest"
+                                        asp-route-id="@req.Id"
+                                        class="btn bg-danger-subtle btn-sm text-danger px-3 rounded-3">
                                             Reject
-                                        </button>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
                                     }
                                 </td>
 

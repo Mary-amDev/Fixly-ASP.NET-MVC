@@ -12,7 +12,6 @@ public class ServiceProvidersController : Controller
     {
         _context = context;
     }
-
     public async Task<IActionResult> Index()
     {
         var providerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -34,4 +33,32 @@ public class ServiceProvidersController : Controller
 
         return View(requests);
     }
+
+            public IActionResult AcceptRequest(int id)
+        {
+            var request = _context.ServiceRequests.FirstOrDefault(r => r.Id == id);
+
+            if (request == null)
+                return NotFound();
+
+            request.Status = RequestStatus.Accepted;
+
+            _context.SaveChanges();
+
+            return RedirectToAction();
+        }
+
+        public IActionResult RejectRequest(int id)
+        {
+            var request = _context.ServiceRequests.FirstOrDefault(r => r.Id == id);
+
+            if (request == null)
+                return NotFound();
+
+            request.Status = RequestStatus.Rejected;
+
+            _context.SaveChanges();
+
+            return RedirectToAction();
+}
 }
