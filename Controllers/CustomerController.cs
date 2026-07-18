@@ -17,71 +17,91 @@ public class CustomerController : Controller
     }
 
 
+
     public async Task<IActionResult> Index(string? category, string? city)
     {
-        var providers = _context.ServiceProviderProfiles
+        var query = _context.ServiceProviderProfiles
             .Include(p => p.User)
             .AsQueryable();
 
+        // this are filters
         if (!string.IsNullOrWhiteSpace(category))
         {
-            providers = providers.Where(p => p.ServiceCategory == category);
+            query = query.Where(p => p.ServiceCategory == category);
         }
 
         if (!string.IsNullOrWhiteSpace(city))
         {
-            providers = providers.Where(p => p.User.City == city);
+            query = query.Where(p => p.User.City == city);
         }
 
-        return View(await providers.ToListAsync());
+        //  filter options from database
+        ViewBag.Categories = await _context.ServiceProviderProfiles
+            .Select(p => p.ServiceCategory)
+            .Where(c => !string.IsNullOrEmpty(c))
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+
+        ViewBag.Cities = await _context.Users
+            .Select(u => u.City)
+            .Where(c => !string.IsNullOrEmpty(c))
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync();
+
+        ViewBag.SelectedCategory = category;
+        ViewBag.SelectedCity = city;
+
+        return View(await query.ToListAsync());
     }
 
-     public async Task<IActionResult> MyRequests(
-    string statusFilter,
-    string searchTerm)
-{
-    var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-    var query = _context.ServiceRequests
-        .Include(r => r.Provider)
-        .Where(r => r.CustomerId == customerId)
-        .AsQueryable();
-
-    if (!string.IsNullOrEmpty(statusFilter) &&
-        Enum.TryParse<RequestStatus>(statusFilter, out var statusEnum))
+    public async Task<IActionResult> MyRequests(
+   string statusFilter,
+   string searchTerm)
     {
-        query = query.Where(r => r.Status == statusEnum);
+        var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var query = _context.ServiceRequests
+            .Include(r => r.Provider)
+            .Where(r => r.CustomerId == customerId)
+            .AsQueryable();
+
+        if (!string.IsNullOrEmpty(statusFilter) &&
+            Enum.TryParse<RequestStatus>(statusFilter, out var statusEnum))
+        {
+            query = query.Where(r => r.Status == statusEnum);
+        }
+
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            query = query.Where(r =>
+                r.Provider.FullName.Contains(searchTerm));
+        }
+
+        var myRequests = await query
+            .Join(
+                _context.ServiceProviderProfiles,
+                request => request.ProviderId,
+                profile => profile.UserId,
+                (request, profile) => new MyRequestViewModel
+                {
+                    Request = request,
+                    ServiceCategory = profile.ServiceCategory
+                })
+            .Where(x =>
+                string.IsNullOrEmpty(searchTerm) ||
+                x.ServiceCategory.Contains(searchTerm) ||
+                x.Request.Provider.FullName.Contains(searchTerm))
+            .OrderByDescending(x => x.Request.RequestedDate)
+            .ToListAsync();
+
+        ViewBag.StatusFilter = statusFilter;
+        ViewBag.SearchTerm = searchTerm;
+
+        return View(myRequests);
     }
 
-    if (!string.IsNullOrEmpty(searchTerm))
-    {
-        query = query.Where(r =>
-            r.Provider.FullName.Contains(searchTerm));
-    }
-
-    var myRequests = await query
-        .Join(
-            _context.ServiceProviderProfiles,
-            request => request.ProviderId,
-            profile => profile.UserId,
-            (request, profile) => new MyRequestViewModel
-            {
-                Request = request,
-                ServiceCategory = profile.ServiceCategory
-            })
-        .Where(x =>
-            string.IsNullOrEmpty(searchTerm) ||
-            x.ServiceCategory.Contains(searchTerm) ||
-            x.Request.Provider.FullName.Contains(searchTerm))
-        .OrderByDescending(x => x.Request.RequestedDate)
-        .ToListAsync();
-
-    ViewBag.StatusFilter = statusFilter;
-    ViewBag.SearchTerm = searchTerm;
-
-    return View(myRequests);
-}
-    
 
     [HttpGet]
     public IActionResult RequestService(string providerId)

@@ -10,7 +10,7 @@
     <p class="text-secondary mb-4">Find trusted help near you.</p>
 
     <!-- Filters -->
-    <form method="get" asp-action="Search" class="filter-box">
+    <form method="get" asp-action="Index" class="filter-box">
 
         <div class="card border-0 shadow-sm rounded-4 mb-4">
             <div class="card-body">
@@ -22,13 +22,14 @@
                             Service Category
                         </label>
 
-                        <select name="category" class="form-select form-select-lg">
+                        <select name="category" onchange="this.form.submit()" class="form-select form-select-lg">
 
-                            <option value="">All categories</option>
-                            <option>Plumbing</option>
-                            <option>Electrical</option>
-                            <option>Cleaning</option>
-                            <option>Painting</option>
+                            @foreach (string item in ViewBag.Categories)
+                            {
+                                <option value="@item" selected="@(ViewBag.SelectedCategory == item)">
+                                    @item
+                                </option>
+                            }
 
                         </select>
                     </div>
@@ -38,13 +39,14 @@
                             City
                         </label>
 
-                        <select name="city" class="form-select form-select-lg">
+                        <select name="city" onchange="this.form.submit()" class="form-select form-select-lg">
 
-                            <option value="">All cities</option>
-                            <option>Jeddah</option>
-                            <option>Khobar</option>
-                            <option>Riyadh</option>
-                            <option>Al-Hasa</option>
+                            @foreach (string item in ViewBag.Cities)
+                            {
+                                <option value="@item" selected="@(ViewBag.SelectedCity == item)">
+                                    @item
+                                </option>
+                            }
 
                         </select>
                     </div>
