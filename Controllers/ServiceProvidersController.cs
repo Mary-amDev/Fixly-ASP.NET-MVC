@@ -45,7 +45,7 @@ public class ServiceProvidersController : Controller
 
             _context.SaveChanges();
 
-            return RedirectToAction();
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult RejectRequest(int id)
@@ -59,6 +59,6 @@ public class ServiceProvidersController : Controller
 
             _context.SaveChanges();
 
-            return RedirectToAction();
+            return RedirectToAction(nameof(Index));
 }
 }
