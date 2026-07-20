@@ -137,4 +137,31 @@ public class CustomerController : Controller
 
         return RedirectToAction("MyRequests");
     }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CompleteRequest(int id)
+    {
+        var customerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        var request = await _context.ServiceRequests.FirstOrDefaultAsync(r =>
+            r.Id == id &&
+            r.CustomerId == customerId);
+
+        if (request == null)
+        {
+            return NotFound();
+        }
+
+        if (request.Status != RequestStatus.Accepted)
+        {
+            return BadRequest();
+        }
+
+        request.Status = RequestStatus.Completed;
+
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction(nameof(MyRequests));
+    }
 }

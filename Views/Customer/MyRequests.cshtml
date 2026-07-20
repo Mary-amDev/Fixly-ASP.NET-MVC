@@ -50,6 +50,7 @@
                             <th>Time</th>
                             <th>Problem</th>
                             <th>Status</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,6 +104,17 @@
             <span class="badge @badgeClass px-3 py-2 rounded-pill">
                 @req.Status
             </span>
+        </td>
+        <td>
+            @if (req.Status == Fixly.Models.RequestStatus.Accepted)
+            {
+                <form asp-action="CompleteRequest" method="post">
+                    <input type="hidden" name="id" value="@req.Id" />
+                    <button type="submit" class="btn btn-success btn-sm">
+                        Mark as Completed
+                    </button>
+                </form>
+            }
         </td>
     </tr>
 }
